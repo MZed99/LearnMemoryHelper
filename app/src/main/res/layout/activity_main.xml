@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:id="@+id/no_data_textview"
         android:text="There isn't any item to show. Add a new event by pressing the plus button!"
         android:visibility="invisible"/>
     <ScrollView
