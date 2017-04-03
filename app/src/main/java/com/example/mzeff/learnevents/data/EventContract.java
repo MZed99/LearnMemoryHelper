@@ -1,5 +1,6 @@
 package com.example.mzeff.learnevents.data;
 
+import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -13,6 +14,9 @@ public class EventContract {
     public static final String PATH_EVENTS= "events";
 
     public static final class EventEntry implements BaseColumns{
+        public static Uri buildEventUri(long id){
+            return ContentUris.withAppendedId(CONTENT_URI,id);
+        }
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_EVENTS).build();
         public static final String TABLE_NAME = "events";

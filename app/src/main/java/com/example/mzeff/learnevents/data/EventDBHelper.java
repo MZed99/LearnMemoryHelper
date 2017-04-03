@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class EventDBHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "eventsDb.db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 4;
 
     EventDBHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
-    ArrayList<Event> mEvents;
+    ArrayList<Event> mEvents=new ArrayList<>();
     Context context;
     Cursor mCursor;
 
@@ -51,7 +51,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         String text2=event.getTextFor2();
 
         holder.eventDate.setText(text1);
-        holder.eventDate.setText(text2);
+        holder.eventBody.setText(text2);
 
 
     }

@@ -17,6 +17,13 @@
         </activity>
         <activity android:name="com.example.mzeff.learnevents.AddNewEventActivity"
             android:label="Add a New Event"/>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity"/>
+        <provider
+            android:authorities="com.example.mzeff.learnevents"
+            android:name="com.example.mzeff.learnevents.data.EventContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

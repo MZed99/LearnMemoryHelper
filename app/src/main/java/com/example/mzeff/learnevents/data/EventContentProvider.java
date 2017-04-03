@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by azeff on 01/04/2017.
@@ -24,7 +25,6 @@ public class EventContentProvider extends ContentProvider {
 
         // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
         /*
           All paths added to the UriMatcher have a corresponding int.
           For each kind of uri you may want to access, add the corresponding match with addURI.
@@ -44,6 +44,8 @@ public class EventContentProvider extends ContentProvider {
         mEventDbHelper = new EventDBHelper(context);
         return true;
     }
+
+
 
     @Nullable
     @Override
@@ -66,7 +68,7 @@ public class EventContentProvider extends ContentProvider {
                 break;
             // Default exception
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Unknown uri in query: " + uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
@@ -89,7 +91,7 @@ public class EventContentProvider extends ContentProvider {
             case EVENTS:
                 long id = db.insert(EventContract.EventEntry.TABLE_NAME, null, values);
                 if ( id > 0 ) {
-                    returnUri = ContentUris.withAppendedId(EventContract.EventEntry.CONTENT_URI, id);
+                    returnUri = EventContract.EventEntry.buildEventUri(id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
@@ -97,9 +99,12 @@ public class EventContentProvider extends ContentProvider {
             // Set the value for the returnedUri and write the default case for unknown URI's
             // Default case throws an UnsupportedOperationException
             default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+                throw new UnsupportedOperationException("Unknown uri in insert: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        if (getContext() != null) {
+            Log.v("INSERT: ","NOTIFYING CONTENT PROVIDER");
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
 
         return returnUri;
     }
@@ -110,7 +115,7 @@ public class EventContentProvider extends ContentProvider {
         int match = sUriMatcher.match(uri);
         int tasksDeleted;
         switch (match){
-            case EVENTS_WITH_ID:
+            case EVENTS:
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
                 tasksDeleted = db.delete(EventContract.EventEntry.TABLE_NAME, "_id=?", new String[]{id});

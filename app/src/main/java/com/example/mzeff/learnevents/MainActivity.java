@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +45,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.setLayoutManager(layoutManager);
         mEventAdapter=new EventAdapter(this);
         error=(TextView) findViewById(R.id.no_data_textview);
+        Log.v("ON CREATE", "Setting the adapter to the recycler view");
+        mRecyclerView.setAdapter(mEventAdapter);
+        Log.v("ON CREATE", "Adapter set");
+
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -86,22 +91,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 startActivity(intent);
             }
         });
+        Log.v("ON CREATE", "Finished onCreate");
 
 
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.v("ON CREATE LOADER", "Setting the adapter to the recycler view");
         return new AsyncTaskLoader<Cursor>(MainActivity.this) {
 
-            Cursor mEventData;
+            Cursor mEventData=null;
+
 
             @Override
             protected void onStartLoading() {
+                Log.v("ON START LOADING", "Setting the adapter to the recycler view");
                 super.onStartLoading();
                 if (mEventData != null) {
+                    Log.v("ON START LOADING", "Delivering result");
                     deliverResult(mEventData);
                 } else {
+                    Log.v("ON START LOADING", "Forcing loading");
                     forceLoad();
                 }
             }
@@ -112,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         null,
                         null,
                         null,
-                        EventContract.EventEntry.COLUMN_EVENTDATE);
+                        EventContract.EventEntry._ID);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -132,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         for(data.moveToFirst();data.moveToLast();data.moveToNext()){
             mEvents.add(new Event(data.getString(data.getColumnIndex("event_date")),data.getString(data.getColumnIndex("event_description"))));
         }
+        Log.v("ON LOAD FINISHED: ",mEvents.toString());
         if (mEvents!=null){
             Toast.makeText(MainActivity.this, " Events loaded with no errors", Toast.LENGTH_SHORT).show();
             mRecyclerView.setVisibility(View.VISIBLE);
